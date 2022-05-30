@@ -3,8 +3,8 @@
 This Dockerfile creates a container with python-oracledb samples and a running
 Oracle Database.
 
-See https://oracle.github.io/python-oracledb/ for information about
-python-oracledb.
+Python-oracledb is the Python database driver for Oracle Database.  See
+https://oracle.github.io/python-oracledb/.
 
 ## Usage
 
@@ -15,11 +15,18 @@ python-oracledb.
   podman pull docker.io/gvenzl/oracle-xe:21-slim
   ```
 
-- Add Python and the samples to the container:
+- Create a container with the database, Python, python-oracledb and the
+  samples. Choose a password for the sample schemas and pass it as an argument:
 
   ```
-  podman build -t cjones/pyo .
-  podman run -d --name pyo -p 1521:1521 -it -e ORACLE_PASSWORD=oracle cjones/pyo
+  podman build -t cjones/pyo --build-arg PYO_PASSWORD=a_secret .
+  ```
+
+- Start the container, which creates the database. Choose a password for the
+  privileged database users and pass it as a variable:
+
+  ```
+  podman run -d --name pyo -p 1521:1521 -it -e ORACLE_PASSWORD=a_secret_password cjones/pyo
   ```
 
 - Log into the container:
@@ -34,11 +41,15 @@ python-oracledb.
   python setup.py
   ```
 
+  The schema used can be seen in `sql/create_schema.sql`
+
 - In the container, run samples like:
 
   ```
   python bind_insert.py
   ```
+
+  Use `vim` to edit files, if required.
 
 The database will persist across container shutdowns, but will be deleted when
 the container is deleted.

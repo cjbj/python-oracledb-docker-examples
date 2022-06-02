@@ -46,8 +46,11 @@
 FROM docker.io/gvenzl/oracle-xe:21-slim
 
 USER root
-RUN  microdnf module enable python39 && \
-     microdnf install python39 python39-pip vim vi
+
+RUN microdnf module disable python36 && \
+    microdnf module enable python39 && \
+    microdnf install python39 python39-pip python39-setuptools python39-wheel vim vi && \
+    microdnf clean all
 
 WORKDIR /samples/
 
@@ -60,7 +63,7 @@ RUN  curl -LO https://github.com/oracle/python-oracledb/archive/refs/tags/v1.0.0
 
 USER oracle
 
-RUN  python3.9 -m pip install oracledb --user
+RUN  python3 -m pip install oracledb --user
 
 ARG PYO_PASSWORD
 
